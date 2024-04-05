@@ -10,3 +10,7 @@ const CONSOLE_SYMBOLS = [
   '______\n|/ |\n| (_)\n| \\|/\n|  |\n| /\n|_____\n',
   '______\n|/ |\n| (_)\n| \\|/\n|  |\n| / \\\n|_____\n'
 ];
+
+const randomWord = () => {
+  return wordBank[Math.floor(Math.random() * wordBank.length)];
+}
