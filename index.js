@@ -16,10 +16,13 @@ const randInt = num => Math.floor(Math.random() * num);
 
 
 const logicController = (() => {
-  let activeWord = wordBank[randInt(wordBank.length)];
-  const MAX_INCORRECT_GUESSES = 5;
+  let activeWord = wordBank[randInt(wordBank.length)].toUpperCase();
+  const INCORRECT_GUESS_LIMIT = 6;
   let incorrectGuesses = 0;
   let guessedLetters = [];
+  let gameState = 0;
+
+  const getActiveWord = () => activeWord;
 
   const getWordOutline = () => {
     let outline = '';
@@ -37,18 +40,92 @@ const logicController = (() => {
     return outlineDisplay.join(' ');
   }
 
-  const checkEnd = () => {
-    let wordProgress = getWordOutline().split(' ').join('');
-    let isGameWon = wordProgress === activeWord;
-    let isGameLost = !(MAX_INCORRECT_GUESSES - incorrectGuesses);
-    return isGameWon || isGameLost;
+  const checkGuess = letter => {
+    guessedLetters.push(letter.toUpperCase());
+    if (activeWord.includes(letter)) return true;
+    else return false;
   }
+
+  const checkRepeatGuess = letter => guessedLetters.includes(letter.toUpperCase());
+
+  const checkWin = () => {
+    let wordProgress = getWordOutline().split(' ').join('');
+    return wordProgress === activeWord;
+  }
+
+  const checkLoss = () => !(INCORRECT_GUESS_LIMIT - incorrectGuesses);
+
+  const checkEnd = () => checkWin() || checkLoss();
+
+  const getLettersGuessed = () => guessedLetters.join(',');
 
   const setNewWord = () => activeWord = wordBank[randInt(wordBank.length)];
 
+  const getGameState = () => CONSOLE_SYMBOLS[gameState];
+
+  const updateGameState = () => {
+    gameState++;
+    incorrectGuesses++;
+  }
+
+  const resetGame = () => {
+    setNewWord();
+    incorrectGuesses = 0;
+    guessedLetters = [];
+    gameState = 0;
+  }
+
   return {
+    getActiveWord,
     getWordOutline,
+    checkGuess,
+    checkRepeatGuess,
+    checkWin,
+    checkLoss,
     checkEnd,
-    setNewWord
+    getLettersGuessed,
+    setNewWord,
+    getGameState,
+    updateGameState,
+    resetGame
+  }
+})();
+
+
+
+const play = (() => {
+  let isGameOver = false;
+  let roundCount = 1;
+
+  console.log('::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n::::::::::::::::::::Welcome to Hangman!:::::::::::::::::::::\n::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n\nPress CTRL+C to stop.\n');
+  while (!isGameOver) {
+    console.log(`- - - - - - - - - - ROUND ${roundCount++} - - - - - - - - - -\n`);
+    console.log(logicController.getGameState());
+    console.log(`${logicController.getWordOutline()}\n`);
+    console.log(`Guesses: \n<${(!(logicController.getLettersGuessed().length) ? ' N/A ' : logicController.getLettersGuessed())}>\n`);
+    let guess = prompt.question('Guess a letter.\n>');
+    let isRepeatLetter = logicController.checkRepeatGuess(guess);
+    let isCorrectGuess = logicController.checkGuess(guess);
+    if (isRepeatLetter) {
+      console.log('\nYou already guessed that letter! Guess again!\n');
+    } else if (isCorrectGuess) {
+      console.log('\nCORRECT - Good guess!\n');
+    } else {
+      logicController.updateGameState();
+      console.log('\nUnfortunately, that is INCORRECT.\n');
+    }
+
+    isGameOver = logicController.checkEnd();
+    if (isGameOver) {
+      console.log('::::::::::::::::::::::::::::::\n::::::::::Game Over!::::::::::\n::::::::::::::::::::::::::::::\n');
+      console.log(logicController.getGameState());
+      console.log(logicController.getWordOutline());
+      if (logicController.checkWin()) {
+        console.log('Congratulations! You win!');
+      } else if (logicController.checkLoss()) {
+        console.log(`The word was '${logicController.getActiveWord()}`);
+        console.log('Better luck next time!');
+      }
+    }
   }
 })();
