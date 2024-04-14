@@ -38,3 +38,9 @@ Once the game begins running, you should be presented with the following interfa
 - ES6 syntax (arrow functions, block scope variable declaration, template literals)
 - Higher order functions (through array methods `forEach()` and `sort()`)
 - Basic input validation (through `readline-sync` various `options` functionality)
+
+### ©️ Credits
+- [Me](github.com/sorrrb)
+- [AlbanyCanCodes](https://cancode.org/)
+- [Brendan Kaer](https://www.linkedin.com/in/brendan-kear/) (thanks for the end-game statistics idea!)
+- [Matina Patsos](https://www.linkedin.com/in/matina-patsos-63aa2626/) & [Jamal Taylor](https://www.linkedin.com/in/jamal-taylor/) (thanks for the continued guidance and instruction!)
