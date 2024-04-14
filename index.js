@@ -156,5 +156,5 @@ const play = (() => {
       }
     }
   }
-  console.log(`\n---------------\nWINS: ${wins}\nLOSSES: ${losses}\nWIN PERCENTAGE: ${((wins / (wins + losses)) * 100).toPrecision(3)}%\n---------------\n`);
+  console.log(`\n------------------------------\nGAME STATS\n------------------------------\nWINS: ${wins}\nLOSSES: ${losses}\nWIN PERCENTAGE: ${((wins / (wins + losses)) * 100).toPrecision(3)}%\n------------------------------\n`);
 })();
