@@ -39,7 +39,7 @@ Once the game begins running, you should be presented with the following interfa
 - Higher order functions (through array methods `forEach()` and `sort()`)
 - Basic input validation (through `readline-sync` various `options` functionality)
 
-### ©️ Credits
+### ©️ Credits/Attributions
 - [Me](github.com/sorrrb)
 - [AlbanyCanCodes](https://cancode.org/)
 - [Brendan Kaer](https://www.linkedin.com/in/brendan-kear/) (thanks for the end-game statistics idea!)
