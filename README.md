@@ -22,7 +22,7 @@ Once the game begins running, you should be presented with the following interfa
 - **(4)** - Represents the 'guess bank' (visual representation of the collection of letters the user has already guessed thus far)
 - **(5)** - Represents the user input field (visual representation of where the game prompts the user to input a guess)
 
-### ⚖️ Rules
+### ⚖️ Game Behavior & Rules
 
 - The goal of the game is for the user to incrementally guess the word selected, letter by letter, until the word is fully revealed
 - The user is afforded 6 incorrect guesses before the game terminates (that is, the user is allowed 5 incorrect guesses before the 6th and final incorrect attempt ends the game)
