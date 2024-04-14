@@ -1,6 +1,7 @@
 import prompt from "readline-sync";
 import wordBank from './word-bank.js';
 
+// Array representing gallows containing ASCII symbols
 const CONSOLE_SYMBOLS = [
   '______\n|/ |\n| \n| \n| \n| \n|_____\n',
   '______\n|/ |\n| (_)\n| \n| \n| \n|_____\n',
@@ -11,10 +12,11 @@ const CONSOLE_SYMBOLS = [
   '______\n|/ |\n| (_)\n| \\|/\n|  |\n| / \\\n|_____\n'
 ];
 
+// Helper function to return a pseudo-random integer
 const randInt = num => Math.floor(Math.random() * num);
 
 
-
+// Module (IIFE) designed to handle core functionality of game and ruleset
 const logicController = (() => {
   let activeWord = wordBank[randInt(wordBank.length)].toUpperCase();
   const INCORRECT_GUESS_LIMIT = 6;
@@ -22,8 +24,10 @@ const logicController = (() => {
   let guessedLetters = [];
   let gameState = 0;
 
+  // Getter for the current word
   const getActiveWord = () => activeWord;
 
+  // Getter for the word outline [ie: _ _ _ _ ]
   const getWordOutline = () => {
     let outline = '';
     for (let i = 0; i < activeWord.length; i++) outline += '_';
@@ -41,7 +45,7 @@ const logicController = (() => {
   }
 
   const checkGuess = letter => {
-    if (!guessedLetters.includes(letter)) guessedLetters.push(letter.toUpperCase());
+    if (!guessedLetters.includes(letter.toUpperCase())) guessedLetters.push(letter.toUpperCase());
     if (activeWord.includes(letter.toUpperCase())) return true;
     else return false;
   }
@@ -84,7 +88,6 @@ const logicController = (() => {
     checkLoss,
     checkEnd,
     getLettersGuessed,
-    setNewWord,
     getGameState,
     updateGameState,
     resetGame
@@ -92,11 +95,10 @@ const logicController = (() => {
 })();
 
 
-
+// Module (IIFE) to handle game control flow and console display to the user
 const play = (() => {
   let isGameOver = false;
   let roundCount = 1;
-  let outcome;
   let wins = 0;
   let losses = 0;
 
@@ -131,11 +133,11 @@ const play = (() => {
       console.log(logicController.getWordOutline());
       if (logicController.checkWin()) {
         console.log('\nCongratulations! You win!\n');
-        outcome = true;
+        wins++;
       } else if (logicController.checkLoss()) {
         console.log(`\nThe word was '${logicController.getActiveWord()}'`);
         console.log('Better luck next time!\n');
-        outcome = false;
+        losses++;
       }
       let playNewRound = prompt.question('Would you like to play again?\n',
         {
@@ -147,8 +149,6 @@ const play = (() => {
         }
       );
       if (playNewRound) {
-        if (outcome) wins++;
-        if (!outcome) losses++;
         isGameOver = false;
         logicController.resetGame();
         roundCount = 1;
@@ -156,4 +156,5 @@ const play = (() => {
       }
     }
   }
+  console.log(`\n---------------\nWINS: ${wins}\nLOSSES: ${losses}\nWIN PERCENTAGE: ${((wins / (wins + losses)) * 100).toPrecision(3)}%\n---------------\n`);
 })();
