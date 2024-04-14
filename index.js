@@ -59,7 +59,7 @@ const logicController = (() => {
 
   const getLettersGuessed = () => guessedLetters.join(',');
 
-  const setNewWord = () => activeWord = wordBank[randInt(wordBank.length)];
+  const setNewWord = () => activeWord = wordBank[randInt(wordBank.length)].toUpperCase();
 
   const getGameState = () => CONSOLE_SYMBOLS[gameState];
 
@@ -96,6 +96,9 @@ const logicController = (() => {
 const play = (() => {
   let isGameOver = false;
   let roundCount = 1;
+  let outcome;
+  let wins = 0;
+  let losses = 0;
 
   console.log('::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n::::::::::::::::::::Welcome to Hangman!:::::::::::::::::::::\n::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n\nPress CTRL+C to stop.\n');
   while (!isGameOver) {
@@ -121,10 +124,41 @@ const play = (() => {
       console.log(logicController.getGameState());
       console.log(logicController.getWordOutline());
       if (logicController.checkWin()) {
-        console.log('Congratulations! You win!');
+        console.log('\nCongratulations! You win!\n');
+        outcome = true;
       } else if (logicController.checkLoss()) {
-        console.log(`The word was '${logicController.getActiveWord()}`);
-        console.log('Better luck next time!');
+        console.log(`\nThe word was '${logicController.getActiveWord()}'`);
+        console.log('Better luck next time!\n');
+        outcome = false;
+      }
+      let playNewRound = prompt.question('Would you like to play again?\n',
+        {
+          limit: function (input) {
+            let output;
+            switch (input) {
+              case 'Yes':
+              case 'Y':
+              case 'yes':
+                output = true;
+                break;
+              default:
+                output = false;
+                break;
+            }
+            return output;
+          }
+        },
+        {
+          limitMessage: 'Sorry, please input a variant of yes (Yes, yes, y) or no (No, no, n).'
+        }
+      );
+      if (playNewRound) {
+        if (outcome) wins++;
+        if (!outcome) losses++;
+        isGameOver = false;
+        logicController.resetGame();
+        roundCount = 1;
+        console.log(`\nCurrent score [${wins} - ${losses}]\n`);
       }
     }
   }
