@@ -41,8 +41,8 @@ const logicController = (() => {
   }
 
   const checkGuess = letter => {
-    guessedLetters.push(letter.toUpperCase());
-    if (activeWord.includes(letter)) return true;
+    if (!guessedLetters.includes(letter)) guessedLetters.push(letter.toUpperCase());
+    if (activeWord.includes(letter.toUpperCase())) return true;
     else return false;
   }
 
@@ -57,7 +57,7 @@ const logicController = (() => {
 
   const checkEnd = () => checkWin() || checkLoss();
 
-  const getLettersGuessed = () => guessedLetters.join(',');
+  const getLettersGuessed = () => guessedLetters.sort().join(',');
 
   const setNewWord = () => activeWord = wordBank[randInt(wordBank.length)].toUpperCase();
 
@@ -106,7 +106,13 @@ const play = (() => {
     console.log(logicController.getGameState());
     console.log(`${logicController.getWordOutline()}\n`);
     console.log(`Guesses: \n<${(!(logicController.getLettersGuessed().length) ? ' N/A ' : logicController.getLettersGuessed())}>\n`);
-    let guess = prompt.question('Guess a letter.\n>');
+    let guess = prompt.question('Guess a letter.\n>',
+      {
+        limit: function (input) {
+          return /^[A-Z]+$/i.test(input) && input.length === 1;
+        },
+        limitMessage: 'Please enter a letter of the English alphabet.'
+      });
     let isRepeatLetter = logicController.checkRepeatGuess(guess);
     let isCorrectGuess = logicController.checkGuess(guess);
     if (isRepeatLetter) {
@@ -133,23 +139,11 @@ const play = (() => {
       }
       let playNewRound = prompt.question('Would you like to play again?\n',
         {
-          limit: function (input) {
-            let output;
-            switch (input) {
-              case 'Yes':
-              case 'Y':
-              case 'yes':
-                output = true;
-                break;
-              default:
-                output = false;
-                break;
-            }
-            return output;
-          }
+          trueValue: ['Yes', 'yes', 'y', 'Y'],
+          falseValue: ['No', 'no', 'n', 'N']
         },
         {
-          limitMessage: 'Sorry, please input a variant of yes (Yes, yes, y) or no (No, no, n).'
+          limitMessage: 'Please input yes or no.'
         }
       );
       if (playNewRound) {
